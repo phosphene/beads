@@ -9,7 +9,7 @@ SHELL := $(subst cmd,bin,$(subst git.exe,bash.exe,$(GIT_BASH)))
 endif
 endif
 
-.PHONY: all build test test-full-cgo test-regression bench bench-quick clean install install-force help check-up-to-date fmt fmt-check
+.PHONY: all build test test-full-cgo test-regression test-e2e bench bench-quick clean install install-force help check-up-to-date fmt fmt-check
 
 # Default target
 all: build
@@ -80,6 +80,12 @@ test:
 test-full-cgo:
 	@echo "Running full CGO-enabled tests..."
 	@./scripts/test-cgo.sh ./...
+
+# Run Docker-based BDD E2E tests
+test-e2e:
+	@echo "Running Docker-based BDD E2E tests..."
+	docker compose -f docker-compose.test.yml up --build --exit-code-from beads-test
+	docker compose -f docker-compose.test.yml down -v
 
 # Run differential regression tests (baseline v0.49.6 vs current worktree).
 # Downloads baseline binary on first run; cached in ~/Library/Caches/beads-regression/.

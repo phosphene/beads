@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # The application under test
+  beads:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    volumes:
+      - beads_data:/root/.beads
+
+  # The test runner
+  beads-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tester
+    volumes:
+      - beads_data:/root/.beads
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - BEADS_TEST_MODE=1
+    depends_on:
+      - beads
+
+volumes:
+  beads_data:

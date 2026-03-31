@@ -52,6 +52,25 @@ func TestMyFeature(t *testing.T) {
 }
 ```
 
+**Git test- On macOS, do **not** run raw `CGO_ENABLED=1 go test ./...` unless ICU flags are set; use the script/Make target above.
+- If you need package- or test-scoped CGO runs:
+```bash
+./scripts/test-cgo.sh ./cmd/bd/...
+./scripts/test-cgo.sh -run '^TestName$' ./cmd/bd/...
+```
+
+### E2E BDD Testing (Containerized)
+
+For top-level end-to-end verification, use the Docker-based BDD suite:
+
+- Run all BDD scenarios: `make test-e2e`
+- Individual features: `tests/bdd/features/*.feature`
+- Test Runner: `tests/bdd/bdd_test.go` (uses `godog` and `testcontainers`)
+
+The BDD suite orchestrates its own `dolthub/dolt-sql-server` container using the host's Docker daemon via socket mounting.
+
+## Non-Interactive Shell Commands
+
 **Git test isolation:** For tests that create temporary git repos, force repo-local hooks:
 
 ```bash
