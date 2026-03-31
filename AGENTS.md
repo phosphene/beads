@@ -6,6 +6,7 @@ This file exists for compatibility with tools that look for AGENTS.md.
 
 ## Key Sections
 
+- **Antigravity Markdown Workflows** - How to use task.md and implementation_plans
 - **Issue Tracking** - How to use bd for work management
 - **Development Guidelines** - Code standards and testing
 - **Visual Design System** - Status icons, colors, and semantic styling for CLI output
@@ -98,6 +99,49 @@ cp -rf source dest          # NOT: cp -r source dest
 - If push fails, resolve and retry until it succeeds
 
 <!-- BEGIN BEADS INTEGRATION -->
+## Antigravity Markdown Workflows
+
+`beads` (bd) supports standard Antigravity markdown-based project management. This allows agents to work with familiar markdown files while `beads` manages the underlying source of truth in Dolt.
+
+### 1. Task Synchronization (task.md)
+
+Agents can manage tasks in a `task.md` file and synchronize them with `beads`:
+
+```bash
+# Sync local task.md with beads
+bd task sync
+
+# Initialize task.md from currently ready beads
+bd task init
+```
+
+The synchronization is bidirectional for statuses:
+- `[ ]` -> `open`
+- `[/]` -> `in_progress`
+- `[x]` -> `closed`
+
+New tasks added to the file without an ID will be automatically created in `beads` and the file updated with the new ID.
+
+### 2. Implementation Plans (implementation_plan.md)
+
+Agents can import technical plans directly into `beads`:
+
+```bash
+# Import an implementation plan and create linked issues
+bd plan import implementation_plan.md
+```
+
+This creates an Epic for the goal and linked Tasks for each proposed change.
+
+### 3. Walkthroughs (walkthrough.md)
+
+Agents can generate progress summaries for their sessions:
+
+```bash
+# Generate a walkthrough from recently closed work
+bd walkthrough generate
+```
+
 ## Issue Tracking with bd (beads)
 
 **IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
@@ -176,10 +220,10 @@ bd automatically syncs via Dolt:
 ### Important Rules
 
 - ✅ Use bd for ALL task tracking
-- ✅ Always use `--json` flag for programmatic use
+- ✅ Sync work via `bd task sync` if using `task.md`
 - ✅ Link discovered work with `discovered-from` dependencies
 - ✅ Check `bd ready` before asking "what should I work on?"
-- ❌ Do NOT create markdown TODO lists
+- ❌ Do NOT use markdown TODOs *without* syncing to `beads`
 - ❌ Do NOT use external issue trackers
 - ❌ Do NOT duplicate tracking systems
 
